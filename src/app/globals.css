@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --canvas: #f7f8f5;
+  --surface: #ffffff;
+  --surface-soft: #edf1eb;
+  --ink: #202b25;
+  --muted: #707b74;
+  --line: #e0e6df;
+  --line-strong: #c6d0c7;
+  --accent: #d84e31;
+  --accent-deep: #bd3e25;
+  --stock: #386c52;
+  --sun: #d79d32;
+}
+
+@theme inline {
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-fraunces);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #f3c8b9;
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.shop-heading {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 13px,
+    rgb(32 43 37 / 2.2%) 13px,
+    rgb(32 43 37 / 2.2%) 14px
+  );
+}
+
+.image-placeholder {
+  background-color: var(--surface-soft);
+  background-image: linear-gradient(135deg, rgb(255 255 255 / 35%), transparent 65%);
+}
+
+.filter-select,
+.filter-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background-color: var(--surface);
+  padding: 0 10px;
+  color: var(--ink);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgb(32 43 37 / 8%);
+}
+
+.filter-input::placeholder {
+  color: var(--muted);
+}
+
+.auth-input,
+.admin-input {
+  display: block;
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--surface);
+  padding: 0 11px;
+  color: var(--ink);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.auth-input:focus,
+.admin-input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgb(32 43 37 / 8%);
+}
+
+.auth-input::placeholder,
+.admin-input::placeholder {
+  color: var(--muted);
+}
+
+.admin-input[type="checkbox"] {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+}
+
+textarea.auth-input,
+textarea.admin-input {
+  height: auto;
+  resize: vertical;
+}
