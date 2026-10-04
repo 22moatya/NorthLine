@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LoginForm } from "@/components/commerce/AuthForms";
 
 export const metadata: Metadata = {
-  title: "Sign in | Northline Market",
+  title: "Sign in",
   robots: { index: false, follow: false },
 };
 

@@ -6,7 +6,7 @@ import { serializeCategory } from "@/lib/category-service";
 import type { CategoryRecord } from "@/models/Category";
 import CategoryManager from "@/components/admin/CategoryManager";
 
-export const metadata: Metadata = { title: "Manage categories | Northline Market", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Manage categories", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminCategoriesPage() {

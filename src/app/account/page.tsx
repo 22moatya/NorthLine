@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
 export const metadata: Metadata = {
-  title: "My account | Northline Market",
+  title: "My account",
   robots: { index: false, follow: false },
 };
 

@@ -55,11 +55,18 @@ export function slugifyProductName(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
+export function createPartialSearchRegex(search: string): RegExp {
+  return new RegExp(escapeRegExp(search), "i");
+}
+
 export async function findProducts(query: ProductQuery) {
   const filter: QueryFilter<ProductRecord> = {};
 
   if (query.search) {
-    filter.$text = { $search: query.search };
+    const partialMatch = createPartialSearchRegex(query.search);
+    filter.$or = ["name", "brand", "sku", "categoryName"].map((field) => ({
+      [field]: partialMatch,
+    }));
   }
 
   if (query.category) {
@@ -92,11 +99,7 @@ export async function findProducts(query: ProductQuery) {
   }
 
   const mongoQuery = Product.find(filter);
-  if (query.search && query.sort === "featured") {
-    mongoQuery.sort({ score: { $meta: "textScore" }, ...sortOptions[query.sort] });
-  } else {
-    mongoQuery.sort(sortOptions[query.sort]);
-  }
+  mongoQuery.sort(sortOptions[query.sort]);
 
   const [products, total] = await Promise.all([
     mongoQuery.skip((query.page - 1) * query.limit).limit(query.limit).lean<StoredProduct[]>(),

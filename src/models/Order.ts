@@ -1,5 +1,6 @@
 import { model, models, Schema, type Model } from "mongoose";
 import type { OrderRecord } from "@/types/order";
+import { CURRENCIES } from "@/types/site-settings";
 
 const orderLineSchema = new Schema(
   {
@@ -39,8 +40,9 @@ const orderSchema = new Schema<OrderRecord>(
     shippingAddress: { type: shippingAddressSchema, required: true },
     subtotal: { type: Number, required: true, min: 0 },
     shippingCost: { type: Number, required: true, min: 0, default: 0 },
+    taxAmount: { type: Number, required: true, min: 0, default: 0 },
     total: { type: Number, required: true, min: 0 },
-    currency: { type: String, enum: ["USD"], default: "USD" },
+    currency: { type: String, enum: CURRENCIES.map(({ code }) => code), default: "USD" },
     status: { type: String, enum: ["pending", "processing", "shipped", "delivered", "cancelled"], default: "pending" },
     paymentStatus: { type: String, enum: ["unpaid", "paid", "refunded"], default: "unpaid" },
   },

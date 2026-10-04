@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, LoaderCircle, ShieldCheck } from "lucide-react";
 import { useCart } from "@/components/commerce/CommerceShell";
+import Money from "@/components/commerce/Money";
+import { useSiteSettings } from "@/components/commerce/SiteSettingsContext";
+import { calculateOrderCharges } from "@/types/site-settings";
 
 interface CheckoutFormProps {
   customer: { name: string; email: string };
@@ -15,6 +18,8 @@ const inputClassName = "auth-input mt-1.5";
 export default function CheckoutForm({ customer }: CheckoutFormProps) {
   const router = useRouter();
   const { lines, subtotal, clearCart } = useCart();
+  const settings = useSiteSettings();
+  const { shippingCost, taxAmount, total } = calculateOrderCharges(subtotal, settings);
   const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const idempotencyKey = useRef<string | null>(null);
@@ -89,7 +94,7 @@ export default function CheckoutForm({ customer }: CheckoutFormProps) {
         </section>
         <p className="flex items-start gap-2 border-l-2 border-[color:var(--sun)] bg-white px-4 py-3 text-xs leading-5 text-[color:var(--muted)]">
           <ShieldCheck size={16} className="mt-0.5 shrink-0 text-[color:var(--stock)]" />
-          Your total is recalculated from the live catalog when the order is placed. Payment is not collected in this checkout.
+          Shipping and tax are estimates. The final total is recalculated from current store settings and live catalog prices when the order is placed. Payment is not collected in this checkout.
         </p>
       </div>
 
@@ -99,13 +104,14 @@ export default function CheckoutForm({ customer }: CheckoutFormProps) {
           {lines.map((line) => (
             <li key={line.key} className="flex justify-between gap-4 py-3 text-xs">
               <span className="min-w-0 text-[color:var(--muted)]"><span className="font-semibold text-[color:var(--ink)]">{line.quantity} ×</span> {line.name}{Object.keys(line.variants).length > 0 ? ` · ${Object.values(line.variants).join(" / ")}` : ""}</span>
-              <span className="shrink-0 font-semibold tabular-nums text-[color:var(--ink)]">${(line.unitPrice * line.quantity).toFixed(2)}</span>
+              <span className="shrink-0 font-semibold tabular-nums text-[color:var(--ink)]"><Money amount={line.unitPrice * line.quantity} /></span>
             </li>
           ))}
         </ul>
         <div className="mt-3 space-y-2 border-t border-[color:var(--line)] pt-4 text-xs">
-          <div className="flex justify-between text-[color:var(--muted)]"><span>Shipping</span><span>Free</span></div>
-          <div className="flex justify-between pt-2 text-sm font-bold text-[color:var(--ink)]"><span>Estimated total</span><span>${subtotal.toFixed(2)}</span></div>
+          <div className="flex justify-between text-[color:var(--muted)]"><span>Shipping</span><span>{shippingCost === 0 ? "Free" : <Money amount={shippingCost} />}</span></div>
+          <div className="flex justify-between text-[color:var(--muted)]"><span>Tax ({settings.taxRatePercent}%)</span><span><Money amount={taxAmount} /></span></div>
+          <div className="flex justify-between pt-2 text-sm font-bold text-[color:var(--ink)]"><span>Estimated total</span><span><Money amount={total} /></span></div>
           <p className="text-[10px] text-[color:var(--muted)]">Final total is confirmed by the server.</p>
         </div>
         {errorMessage ? <p role="alert" className="mt-4 text-xs leading-5 text-[color:var(--accent)]">{errorMessage}</p> : null}

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { hasAdminAccess } from "@/lib/admin-access";
 import Order from "@/models/Order";
 import { errorResponse, handleApiError, successResponse } from "@/lib/api-response";
 import { connectToDatabase } from "@/lib/mongodb";
@@ -13,7 +14,7 @@ type AdminOrder = OrderRecord & { _id: { toString(): string } };
 export async function GET(request: Request): Promise<Response> {
   const session = await auth();
   if (!session?.user) return errorResponse("Authentication is required", 401);
-  if (session.user.role !== "admin") return errorResponse("Administrator access is required", 403);
+  if (!hasAdminAccess(session.user)) return errorResponse("Administrator access is required", 403);
 
   const url = new URL(request.url);
   const statusParam = url.searchParams.get("status");

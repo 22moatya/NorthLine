@@ -7,6 +7,8 @@ import { errorResponse, handleApiError, successResponse, validationErrorResponse
 import { connectToDatabase } from "@/lib/mongodb";
 import { serializeOrder, type StoredOrder } from "@/lib/order-service";
 import { checkoutSchema, idempotencyKeySchema } from "@/lib/commerce-validations";
+import { getSiteSettings } from "@/lib/site-settings";
+import { calculateOrderCharges } from "@/types/site-settings";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -116,7 +118,8 @@ export async function POST(request: Request): Promise<Response> {
       });
     }
 
-    const shippingCost = 0;
+    const settings = await getSiteSettings();
+    const { shippingCost, taxAmount, total } = calculateOrderCharges(subtotal, settings);
     const order = await Order.create({
       orderNumber: `NL-${Date.now().toString(36).toUpperCase()}-${randomUUID().slice(0, 8).toUpperCase()}`,
       user: userId,
@@ -125,7 +128,9 @@ export async function POST(request: Request): Promise<Response> {
       shippingAddress: parsedCheckout.data.shippingAddress,
       subtotal,
       shippingCost,
-      total: subtotal + shippingCost,
+      taxAmount,
+      total,
+      currency: settings.currency,
       status: "pending",
       paymentStatus: "unpaid",
     });

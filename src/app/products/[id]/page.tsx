@@ -7,6 +7,7 @@ import { findProductById } from "@/lib/product-service";
 import ProductGallery from "@/components/products/ProductGallery";
 import ProductPrice from "@/components/products/ProductPrice";
 import ProductPurchasePanel from "@/components/products/ProductPurchasePanel";
+import Money from "@/components/commerce/Money";
 import ProductRating from "@/components/products/ProductRating";
 import type { ProductDto } from "@/types/product";
 
@@ -26,14 +27,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     product = await getProduct(id);
   } catch (error) {
     console.error("Product metadata could not be loaded", error);
-    return { title: "Product | Northline Market" };
+    return { title: "Product" };
   }
 
   if (!product) notFound();
 
   const description = product.shortDescription || product.description.slice(0, 160);
   return {
-    title: `${product.name} | Northline Market`,
+    title: product.name,
     description,
     openGraph: {
       title: product.name,
@@ -74,7 +75,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
           <div className="mt-6">
             <ProductPrice price={product.price} comparePrice={product.comparePrice} discount={product.discount} />
             {product.comparePrice !== undefined && product.comparePrice > product.price ? (
-              <p className="mt-1 text-xs text-[color:var(--muted)]">You save {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(product.comparePrice - product.price)}</p>
+              <p className="mt-1 text-xs text-[color:var(--muted)]">You save <Money amount={product.comparePrice - product.price} /></p>
             ) : null}
           </div>
 

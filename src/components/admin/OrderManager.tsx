@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { MessageCircle } from "lucide-react";
 import type { OrderStatus, PaymentStatus } from "@/types/order";
+import { formatMoney, type CurrencyCode } from "@/types/site-settings";
+import { createWhatsAppOrderLink } from "@/lib/whatsapp";
 
 export interface AdminOrderSummary {
   id: string;
   orderNumber: string;
   customerName: string;
   customerEmail: string;
+  customerPhone: string;
   itemCount: number;
   total: number;
-  currency: "USD";
+  currency: CurrencyCode;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   createdAt: string;
@@ -68,9 +72,28 @@ export default function OrderManager({ orders }: OrderManagerProps) {
               <tr key={order.id} className="hover:bg-[color:var(--canvas)]">
                 <td className="px-4 py-3 font-mono text-[11px] font-semibold text-[color:var(--ink)]">{order.orderNumber}</td>
                 <td className="px-4 py-3"><p className="font-semibold text-[color:var(--ink)]">{order.customerName}</p><p className="mt-0.5 text-[10px] text-[color:var(--muted)]">{order.customerEmail}</p></td>
+                <td className="px-4 py-3">
+                  <p className="whitespace-nowrap text-[color:var(--muted)]">{order.customerPhone}</p>
+                  {(() => {
+                    const whatsappLink = createWhatsAppOrderLink(order.customerPhone, order.customerName, order.orderNumber);
+                    return whatsappLink ? (
+                      <a
+                        href={whatsappLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Contact ${order.customerName} about order ${order.orderNumber} on WhatsApp`}
+                        className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-sm bg-[#25d366] px-2.5 text-[11px] font-semibold text-white hover:bg-[#1fb85a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#128c4a]"
+                      >
+                        <MessageCircle size={14} /> WhatsApp
+                      </a>
+                    ) : (
+                      <p className="mt-1 max-w-36 text-[10px] leading-4 text-[color:var(--muted)]">WhatsApp needs an international number with country code.</p>
+                    );
+                  })()}
+                </td>
                 <td className="px-4 py-3 whitespace-nowrap text-[color:var(--muted)]">{new Date(order.createdAt).toLocaleDateString("en-US", { dateStyle: "medium" })}</td>
                 <td className="px-4 py-3 tabular-nums text-[color:var(--ink)]">{order.itemCount}</td>
-                <td className="px-4 py-3 tabular-nums font-semibold text-[color:var(--ink)]">${order.total.toFixed(2)}</td>
+                <td className="px-4 py-3 tabular-nums font-semibold text-[color:var(--ink)]">{formatMoney(order.total, order.currency)}</td>
                 <td className="px-4 py-3 capitalize text-[color:var(--muted)]">{order.paymentStatus}</td>
                 <td className="px-4 py-3">
                   <label className="sr-only" htmlFor={`order-status-${order.id}`}>Fulfillment status for {order.orderNumber}</label>
@@ -80,7 +103,7 @@ export default function OrderManager({ orders }: OrderManagerProps) {
                 </td>
               </tr>
             ))}
-            {orders.length === 0 ? <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-[color:var(--muted)]">No orders yet.</td></tr> : null}
+            {orders.length === 0 ? <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-[color:var(--muted)]">No orders yet.</td></tr> : null}
           </tbody>
         </table>
       </div>

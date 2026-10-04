@@ -28,6 +28,7 @@ Northline Market is a Next.js App Router storefront with a MongoDB product API, 
 - `PUT /api/products/:id` updates a product.
 - `DELETE /api/products/:id` deletes a product.
 - `POST /api/auth/register` creates an account; Auth.js handles credential sign-in and sign-out.
+- `GET /api/admin/settings` reads store settings; `PUT /api/admin/settings` updates them for administrators.
 - `GET /api/orders` lists the signed-in user's recent orders.
 - `POST /api/orders` validates a checkout, reserves stock, recalculates prices from MongoDB, and creates an idempotent order.
 
@@ -37,4 +38,4 @@ Checkout records orders as `pending` with `unpaid` payment status. No payment de
 
 ## Admin
 
-The `/admin` dashboard, product/category managers, and order fulfillment controls require a signed-in email in `ADMIN_EMAILS`. The order console can update fulfillment status; only a verified payment webhook should change payment status. Seed the category documents along with sample products using `npm run seed`.
+The `/admin` dashboard, product/category managers, order fulfillment controls, and store settings require a signed-in email in `ADMIN_EMAILS`. Open `/admin/settings` to change store contact data, HTTPS/site-path logo, brand colors, display currency (without converting prices), flat shipping rate, optional free-shipping threshold, and flat tax percentage. Each settings section has its own save action and only updates that section. Shipping and tax settings apply to new orders, not orders already placed. Product and category managers support editing and deletion; a category with products must be emptied before it can be deleted. The order console can update fulfillment status and open a WhatsApp chat with the customer using their international phone number; only a verified payment webhook should change payment status. Seed the category documents along with sample products using `npm run seed`.

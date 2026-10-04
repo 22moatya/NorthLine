@@ -1,17 +1,18 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { auth } from "@/auth";
 import { errorResponse } from "@/lib/api-response";
+import { hasAdminAccess } from "@/lib/admin-access";
 
 export async function requireAdmin(): Promise<Response | null> {
   const session = await auth();
   if (!session?.user) return errorResponse("Authentication is required", 401);
-  if (session.user.role !== "admin") return errorResponse("Administrator access is required", 403);
+  if (!hasAdminAccess(session.user)) return errorResponse("Administrator access is required", 403);
   return null;
 }
 
 export async function authorizeProductWrite(request: Request): Promise<Response | null> {
   const session = await auth();
-  if (session?.user.role === "admin") return null;
+  if (hasAdminAccess(session?.user)) return null;
 
   const configuredKey = process.env.PRODUCTS_ADMIN_API_KEY;
 

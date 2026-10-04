@@ -5,9 +5,10 @@ import { auth } from "@/auth";
 import Order from "@/models/Order";
 import { connectToDatabase } from "@/lib/mongodb";
 import type { OrderRecord } from "@/types/order";
+import { formatMoney } from "@/types/site-settings";
 
 export const metadata: Metadata = {
-  title: "Your orders | Northline Market",
+  title: "Your orders",
   robots: { index: false, follow: false },
 };
 
@@ -43,7 +44,7 @@ export default async function OrdersPage({
               </div>
               <div className="flex items-center gap-5 text-xs">
                 <span className="capitalize text-[color:var(--muted)]">{order.status} · {order.paymentStatus}</span>
-                <span className="font-semibold tabular-nums text-[color:var(--ink)]">${order.total.toFixed(2)}</span>
+                <span className="font-semibold tabular-nums text-[color:var(--ink)]">{formatMoney(order.total, order.currency ?? "USD")}</span>
               </div>
             </article>
           ))}

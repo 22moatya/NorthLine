@@ -5,10 +5,11 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { PRODUCT_CATEGORIES } from "@/lib/product-categories";
 import { findProducts } from "@/lib/product-service";
 import ProductGrid from "@/components/products/ProductGrid";
+import Money from "@/components/commerce/Money";
 
 export const metadata: Metadata = {
-  title: "Northline Market | Thoughtful essentials for everyday life",
-  description: "Shop the curated essentials and modern staples on Northline Market.",
+  title: "Thoughtful essentials for everyday life",
+  description: "Shop a thoughtful edit of useful things and modern everyday staples.",
 };
 
 export const dynamic = "force-dynamic";
@@ -47,7 +48,7 @@ export default async function HomePage() {
             </div>
 
             <p className="mt-5 max-w-xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-              From clean desk essentials to refined essentials for home, work, and movement, Northline curates modern staples built for real routines.
+              From clean desk essentials to refined essentials for home, work, and movement, discover modern staples built for real routines.
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -93,7 +94,7 @@ export default async function HomePage() {
               <div className="mt-4 flex items-end justify-between gap-3">
                 <div>
                   <h2 className="font-display text-3xl leading-none text-[color:var(--ink)]">30% off</h2>
-                  <p className="mt-2 text-sm text-[color:var(--muted)]">smart finds under $120</p>
+                  <p className="mt-2 text-sm text-[color:var(--muted)]">smart finds under <Money amount={120} /></p>
                 </div>
                 <div className="grid size-12 place-items-center rounded-full bg-white text-[color:var(--accent)] shadow-sm">
                   <TrendingUp size={18} />

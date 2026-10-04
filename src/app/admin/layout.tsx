@@ -2,11 +2,12 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import AdminNavigation from "@/components/admin/AdminNavigation";
+import { hasAdminAccess } from "@/lib/admin-access";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect("/account/login?callbackUrl=/admin");
-  if (session.user.role !== "admin") redirect("/account");
+  if (!hasAdminAccess(session.user)) redirect("/account");
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-[1500px] px-4 py-8 sm:px-7 lg:px-10">

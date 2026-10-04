@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ClipboardList, LayoutDashboard, Tags } from "lucide-react";
+import { Boxes, ClipboardList, LayoutDashboard, Settings, Tags } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Boxes },
   { href: "/admin/categories", label: "Categories", icon: Tags },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminNavigation() {

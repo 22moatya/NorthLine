@@ -4,7 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import type { OrderRecord } from "@/types/order";
 import OrderManager, { type AdminOrderSummary } from "@/components/admin/OrderManager";
 
-export const metadata: Metadata = { title: "Manage orders | Northline Market", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Manage orders", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 type StoredAdminOrder = OrderRecord & { _id: { toString(): string } };
@@ -17,9 +17,10 @@ export default async function AdminOrdersPage() {
     orderNumber: order.orderNumber,
     customerName: order.shippingAddress.fullName,
     customerEmail: order.shippingAddress.email,
+    customerPhone: order.shippingAddress.phone,
     itemCount: order.items.reduce((total, item) => total + item.quantity, 0),
     total: order.total,
-    currency: order.currency,
+    currency: order.currency ?? "USD",
     status: order.status,
     paymentStatus: order.paymentStatus,
     createdAt: order.createdAt.toISOString(),

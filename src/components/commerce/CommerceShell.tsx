@@ -19,6 +19,8 @@ import {
   X,
 } from "lucide-react";
 import { PRODUCT_CATEGORIES } from "@/lib/product-categories";
+import { formatMoney, type SiteSettings } from "@/types/site-settings";
+import { SiteSettingsProvider } from "@/components/commerce/SiteSettingsContext";
 
 const CART_STORAGE_KEY = "northline-market-cart-v1";
 
@@ -111,9 +113,10 @@ export function useCart(): CartContextValue {
 interface CommerceShellProps {
   children: ReactNode;
   user: { name: string | null; email: string | null; role: "customer" | "admin" } | null;
+  settings: SiteSettings;
 }
 
-export default function CommerceShell({ children, user }: CommerceShellProps) {
+export default function CommerceShell({ children, user, settings }: CommerceShellProps) {
   const cartSnapshot = useSyncExternalStore(subscribeToCart, readCartSnapshot, getServerCartSnapshot);
   const lines = parseCartSnapshot(cartSnapshot);
   const [cartOpen, setCartOpen] = useState(false);
@@ -162,13 +165,18 @@ export default function CommerceShell({ children, user }: CommerceShellProps) {
   const categoryLinks = PRODUCT_CATEGORIES.slice(0, 5);
 
   return (
+    <SiteSettingsProvider settings={settings}>
     <CartContext.Provider value={cartValue}>
       <header className="sticky top-0 z-30 border-b border-[color:var(--line)] bg-[color:var(--canvas)]/95 backdrop-blur">
         <nav aria-label="Main navigation" className="mx-auto w-full max-w-[1500px] px-4 sm:px-7 lg:px-10">
           <div className="flex h-16 items-center justify-between gap-4">
             <Link href="/" className="flex shrink-0 items-center gap-2 rounded-sm text-[color:var(--ink)] focus-visible:outline-2 focus-visible:outline-[color:var(--accent)]">
-              <span className="grid size-8 place-items-center bg-[color:var(--ink)] text-xs font-bold text-white">N</span>
-              <span className="font-display text-lg">Northline</span>
+              {settings.logoUrl ? (
+                <Image src={settings.logoUrl} alt="" width={36} height={36} unoptimized className="size-9 rounded-sm object-contain" />
+              ) : (
+                <span className="grid size-8 place-items-center bg-[color:var(--ink)] text-xs font-bold text-white">{settings.storeName.trim().charAt(0).toUpperCase() || "N"}</span>
+              )}
+              <span className="font-display text-lg">{settings.storeName}</span>
             </Link>
 
             <div className="hidden items-center gap-6 xl:flex">
@@ -229,6 +237,16 @@ export default function CommerceShell({ children, user }: CommerceShellProps) {
 
       {children}
 
+      <footer className="mt-auto border-t border-[color:var(--line)] bg-white">
+        <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs sm:px-7 lg:px-10">
+          <p className="font-semibold text-[color:var(--ink)]">{settings.storeName}</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-[color:var(--muted)]">
+            {settings.contactEmail ? <a href={`mailto:${settings.contactEmail}`} className="hover:text-[color:var(--accent)]">{settings.contactEmail}</a> : null}
+            {settings.contactPhone ? <a href={`tel:${settings.contactPhone.replace(/[^\d+]/g, "")}`} className="hover:text-[color:var(--accent)]">{settings.contactPhone}</a> : null}
+          </div>
+        </div>
+      </footer>
+
       {cartOpen ? (
         <div className="fixed inset-0 z-50 flex justify-end" role="presentation">
           <button type="button" aria-label="Close bag" onClick={() => setCartOpen(false)} className="absolute inset-0 bg-black/35" />
@@ -256,7 +274,7 @@ export default function CommerceShell({ children, user }: CommerceShellProps) {
                       <div className="min-w-0 flex-1">
                         <Link href={`/products/${line.productId}`} onClick={() => setCartOpen(false)} className="line-clamp-2 text-sm font-semibold text-[color:var(--ink)] hover:text-[color:var(--accent)]">{line.name}</Link>
                         {Object.keys(line.variants).length > 0 ? <p className="mt-1 text-[11px] text-[color:var(--muted)]">{Object.entries(line.variants).map(([name, value]) => `${name}: ${value}`).join(" · ")}</p> : null}
-                        <p className="mt-1 text-xs font-semibold text-[color:var(--ink)]">${line.unitPrice.toFixed(2)}</p>
+                        <p className="mt-1 text-xs font-semibold text-[color:var(--ink)]">{formatMoney(line.unitPrice, settings.currency)}</p>
                         <div className="mt-2 flex items-center gap-3">
                           <div className="flex h-8 items-center border border-[color:var(--line)]">
                             <button type="button" aria-label={`Decrease ${line.name} quantity`} onClick={() => setQuantity(line.key, line.quantity - 1)} className="grid size-8 place-items-center"><Minus size={12} /></button>
@@ -272,7 +290,7 @@ export default function CommerceShell({ children, user }: CommerceShellProps) {
                 <div className="border-t border-[color:var(--line)] px-5 py-5">
                   <div className="mb-4 flex justify-between text-sm">
                     <span className="text-[color:var(--muted)]">Subtotal</span>
-                    <span className="font-semibold tabular-nums text-[color:var(--ink)]">${subtotal.toFixed(2)}</span>
+                    <span className="font-semibold tabular-nums text-[color:var(--ink)]">{formatMoney(subtotal, settings.currency)}</span>
                   </div>
                   <Link href="/checkout" onClick={() => setCartOpen(false)} className="flex h-12 items-center justify-center gap-2 rounded-sm bg-[color:var(--ink)] text-sm font-semibold text-white transition-colors hover:bg-[color:var(--accent)]">
                     Continue to checkout <ArrowRight size={16} />
@@ -284,5 +302,6 @@ export default function CommerceShell({ children, user }: CommerceShellProps) {
         </div>
       ) : null}
     </CartContext.Provider>
+    </SiteSettingsProvider>
   );
 }

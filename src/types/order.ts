@@ -1,4 +1,5 @@
 import type { Types } from "mongoose";
+import type { CurrencyCode } from "@/types/site-settings";
 
 export type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 export type PaymentStatus = "unpaid" | "paid" | "refunded";
@@ -34,8 +35,9 @@ export interface OrderRecord {
   shippingAddress: ShippingAddress;
   subtotal: number;
   shippingCost: number;
+  taxAmount: number;
   total: number;
-  currency: "USD";
+  currency: CurrencyCode;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   createdAt: Date;
@@ -57,8 +59,9 @@ export interface OrderDto {
   }>;
   subtotal: number;
   shippingCost: number;
+  taxAmount: number;
   total: number;
-  currency: "USD";
+  currency: CurrencyCode;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   createdAt: string;

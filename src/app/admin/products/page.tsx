@@ -8,7 +8,7 @@ import type { StoredProduct } from "@/models/Product";
 import type { CategoryRecord } from "@/models/Category";
 import ProductManager from "@/components/admin/ProductManager";
 
-export const metadata: Metadata = { title: "Manage products | Northline Market", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Manage products", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductsPage() {

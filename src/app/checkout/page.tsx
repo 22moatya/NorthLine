@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import CheckoutForm from "@/components/commerce/CheckoutForm";
 
 export const metadata: Metadata = {
-  title: "Checkout | Northline Market",
+  title: "Checkout",
   robots: { index: false, follow: false },
 };
 

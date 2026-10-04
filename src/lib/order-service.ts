@@ -19,6 +19,7 @@ export function serializeOrder(order: StoredOrder): OrderDto {
     })),
     subtotal: order.subtotal,
     shippingCost: order.shippingCost,
+    taxAmount: order.taxAmount ?? 0,
     total: order.total,
     currency: order.currency,
     status: order.status,

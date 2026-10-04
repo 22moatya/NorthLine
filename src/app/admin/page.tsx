@@ -6,7 +6,7 @@ import Category from "@/models/Category";
 import Order from "@/models/Order";
 import { connectToDatabase } from "@/lib/mongodb";
 
-export const metadata: Metadata = { title: "Admin overview | Northline Market", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Admin overview", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {

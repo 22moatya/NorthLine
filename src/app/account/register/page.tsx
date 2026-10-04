@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { RegisterForm } from "@/components/commerce/AuthForms";
 
 export const metadata: Metadata = {
-  title: "Create an account | Northline Market",
+  title: "Create an account",
   robots: { index: false, follow: false },
 };
 

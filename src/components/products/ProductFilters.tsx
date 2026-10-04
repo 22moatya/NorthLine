@@ -99,7 +99,7 @@ export default function ProductFilters({ categories, category, minPrice, maxPric
             <div className="grid grid-cols-2 gap-2">
               <label className="min-w-0">
                 <span className="mb-1 block text-[11px] text-[color:var(--muted)]">Min</span>
-                <input name="minPrice" type="number" min="0" step="1" defaultValue={minPrice} placeholder="$0" className="filter-input" />
+                <input name="minPrice" type="number" min="0" step="1" defaultValue={minPrice} placeholder="0" className="filter-input" />
               </label>
               <label className="min-w-0">
                 <span className="mb-1 block text-[11px] text-[color:var(--muted)]">Max</span>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import type { CategoryDto } from "@/types/category";
 import type { ProductDto } from "@/types/product";
+import { useSiteSettings } from "@/components/commerce/SiteSettingsContext";
 
 interface ProductManagerProps {
   products: ProductDto[];
@@ -15,6 +16,7 @@ const fieldClass = "admin-input";
 
 export default function ProductManager({ products, categories }: ProductManagerProps) {
   const router = useRouter();
+  const { currency } = useSiteSettings();
   const formRef = useRef<HTMLFormElement>(null);
   const [editing, setEditing] = useState<ProductDto | null>(null);
   const [query, setQuery] = useState("");
@@ -130,8 +132,8 @@ export default function ProductManager({ products, categories }: ProductManagerP
           <label className="text-xs font-semibold text-[color:var(--ink)] sm:col-span-2">Product name<input required name="name" defaultValue={editing?.name} maxLength={160} className={fieldClass} /></label>
           <label className="text-xs font-semibold text-[color:var(--ink)] sm:col-span-2">Short description<input required name="shortDescription" defaultValue={editing?.shortDescription} maxLength={300} className={fieldClass} /></label>
           <label className="text-xs font-semibold text-[color:var(--ink)] sm:col-span-2">Description<textarea required name="description" defaultValue={editing?.description} rows={3} className={`${fieldClass} min-h-24 py-2`} /></label>
-          <label className="text-xs font-semibold text-[color:var(--ink)]">Price (USD)<input required name="price" type="number" min="0.01" step="0.01" defaultValue={editing?.price} className={fieldClass} /></label>
-          <label className="text-xs font-semibold text-[color:var(--ink)]">Compare price<input name="comparePrice" type="number" min="0.01" step="0.01" defaultValue={editing?.comparePrice} className={fieldClass} /></label>
+          <label className="text-xs font-semibold text-[color:var(--ink)]">Price ({currency})<input required name="price" type="number" min="0.01" step="0.01" defaultValue={editing?.price} className={fieldClass} /></label>
+          <label className="text-xs font-semibold text-[color:var(--ink)]">Compare price ({currency})<input name="comparePrice" type="number" min="0.01" step="0.01" defaultValue={editing?.comparePrice} className={fieldClass} /></label>
           <label className="text-xs font-semibold text-[color:var(--ink)]">SKU<input required name="sku" defaultValue={editing?.sku} maxLength={64} className={fieldClass} /></label>
           <label className="text-xs font-semibold text-[color:var(--ink)]">Stock<input required name="stock" type="number" min="0" step="1" defaultValue={editing?.stock ?? 0} className={fieldClass} /></label>
           <label className="text-xs font-semibold text-[color:var(--ink)]">Category<select required name="category" defaultValue={editing?.category ?? ""} className={fieldClass}><option value="" disabled>Select category</option>{categories.filter((category) => category.active).map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>

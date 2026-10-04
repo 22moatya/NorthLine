@@ -6,3 +6,7 @@ export function isAdminEmail(email: string): boolean {
     .filter(Boolean)
     .includes(email.trim().toLowerCase());
 }
+
+export function hasAdminAccess(user: { email?: string | null } | null | undefined): boolean {
+  return typeof user?.email === "string" && isAdminEmail(user.email);
+}

@@ -14,7 +14,7 @@ import ProductSort from "@/components/products/ProductSort";
 type PageSearchParams = Record<string, string | string[] | undefined>;
 
 export const metadata: Metadata = {
-  title: "Shop | Northline Market",
+  title: "Shop",
   description: "Browse considered essentials across clothing, technology, home, sport, and more.",
 };
 
@@ -84,7 +84,7 @@ export default async function ProductsPage({
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--accent)]">
-              Northline Market <span className="px-1 text-[color:var(--muted)]">/</span> Everyday edit
+              Shop <span className="px-1 text-[color:var(--muted)]">/</span> Everyday edit
             </p>
             <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
               <h1 className="font-display text-5xl leading-none text-[color:var(--ink)] sm:text-6xl">Shop</h1>
